@@ -2,14 +2,21 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
+require('dotenv').config();
+
 const usrRoutes = require('./routes/usersRoutes');
+const imgRoutes = require('./routes/imagesRoutes');
 
 const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost:27017/db', {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+mongoose.connect(process.env.MONGODB_ATLAS_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+}).then(() => {
   console.log('Connected to Database');
 }).catch((error) => {
   console.log('Unable to connect to Database');
@@ -17,7 +24,7 @@ mongoose.connect('mongodb://localhost:27017/db', {useNewUrlParser: true, useUnif
 });
 
 app.use('/auth', usrRoutes);
-
+app.use('/img', imgRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!!');
