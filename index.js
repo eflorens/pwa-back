@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -10,6 +11,7 @@ const imgRoutes = require('./routes/imagesRoutes');
 const app = express();
 const port = process.env.PORT || 8000;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGODB_ATLAS_URI, {
