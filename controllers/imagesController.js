@@ -20,3 +20,21 @@ exports.uploadImage = (req, res, next) => {
 		}
 	);
 };
+
+exports.getImages = (req, res, next) => {
+	Image.find({userId: req.userId}).then(
+		(images) => {
+			imgUrls = []
+			images.forEach((image) => {
+				imgUrls.push({ imgUrl: image.imgUrl });
+			});
+			return res.send(imgUrls);
+		}
+	).catch(
+		(error) => {
+			res.status(500).json({
+				error: error
+			});
+		}
+	);
+};

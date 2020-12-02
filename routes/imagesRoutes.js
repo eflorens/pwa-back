@@ -6,6 +6,7 @@ const multerUploadMiddleware = require('../middleware/multerUploadMiddleware');
 
 const imgCrtl = require("../controllers/imagesController");
 
-router.post("/upload", authentifiedVerification, multerUploadMiddleware, imgCrtl.uploadImage);
+router.post("/", authentifiedVerification, multerUploadMiddleware, imgCrtl.uploadImage);
+router.get("/", authentifiedVerification, imgCrtl.getImages);
 
 module.exports = router;
