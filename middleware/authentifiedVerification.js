@@ -12,6 +12,7 @@ module.exports = (req, res, next) => {
 					message: "Invalid Token"
 				});
 			}
+			req.userId = verified.userId;
 			next();
 		} catch (err) {
 			console.log(err.message);
