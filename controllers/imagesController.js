@@ -40,3 +40,19 @@ exports.getImages = (req, res, next) => {
 		}
 	);
 };
+
+exports.getImageById = (req, res, next) => {
+	Image.find({userId: req.userId}).then(
+		(images) => {
+			const img = images.find(image => image._id == req.params.id);
+
+			return res.send(img != undefined ? {id: img._id, imgUrl: img.imgUrl} : {});
+		}
+	).catch(
+		(error) => {
+			res.status(500).json({
+				error: error
+			});
+		}
+	);
+};
