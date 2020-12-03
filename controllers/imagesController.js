@@ -1,4 +1,6 @@
 const Image = require('../models/imagesModel');
+const fs = require('fs');
+const e = require('express');
 
 exports.uploadImage = (req, res, next) => {
 	const image = new Image({
@@ -9,7 +11,7 @@ exports.uploadImage = (req, res, next) => {
 	image.save().then(
 		() => {
 			res.status(201).json({
-				message: 'Image successfully registered'
+				message: 'Image successfully uploaded'
 			});
 		}
 	).catch(
@@ -42,11 +44,33 @@ exports.getImages = (req, res, next) => {
 };
 
 exports.getImageById = (req, res, next) => {
-	Image.find({userId: req.userId}).then(
-		(images) => {
-			const img = images.find(image => image._id == req.params.id);
-
+	Image.findOne({userId: req.userId, _id: req.params.id}).then(
+		(img) => {
 			return res.send(img != undefined ? {id: img._id, imgUrl: img.imgUrl} : {});
+		}
+	).catch(
+		(error) => {
+			res.status(500).json({
+				error: error
+			});
+		}
+	);
+};
+
+exports.deleteImageById = (req, res, next) => {
+	Image.findOne({userId: req.userId, _id: req.params.id}).then(
+		(img) => {
+			fs.unlink(`uploads/${img.title}`, () => {
+				Image.deleteOne({userId: req.userId, _id: req.params.id}).then(
+					() => res.status(200).json({message: "Image successfully deleted"})
+				).catch(
+					(error) => {
+						res.status(500).json({
+							error: error
+						});
+					}
+				);
+			});
 		}
 	).catch(
 		(error) => {

@@ -9,5 +9,6 @@ const imgCrtl = require("../controllers/imagesController");
 router.post("/", authentifiedVerification, multerUploadMiddleware, imgCrtl.uploadImage);
 router.get("/", authentifiedVerification, imgCrtl.getImages);
 router.get("/:id", authentifiedVerification, imgCrtl.getImageById);
+router.delete("/:id", authentifiedVerification, imgCrtl.deleteImageById);
 
 module.exports = router;
