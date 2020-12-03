@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -25,6 +26,8 @@ mongoose.connect(process.env.MONGODB_ATLAS_URI, {
   console.log('Unable to connect to Database');
   console.log(error);
 });
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/auth', usrRoutes);
 app.use('/img', imgRoutes);
