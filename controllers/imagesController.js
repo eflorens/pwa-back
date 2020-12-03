@@ -26,7 +26,9 @@ exports.getImages = (req, res, next) => {
 		(images) => {
 			imgUrls = []
 			images.forEach((image) => {
-				imgUrls.push({ imgUrl: image.imgUrl });
+				imgUrls.push({ 
+					id: image._id,
+					imgUrl: image.imgUrl });
 			});
 			return res.send(imgUrls);
 		}
