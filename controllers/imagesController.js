@@ -3,10 +3,9 @@ const fs = require('fs');
 const e = require('express');
 
 exports.uploadImage = (req, res, next) => {
-	console.log("TEST DEBUG uploadImage");
 	const image = new Image({
 		title: req.file.filename,
-		/*imgUrl: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`,*/
+		imgUrl: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`,
 		userId: req.userId
 	});
 	image.save().then(
