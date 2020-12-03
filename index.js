@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 require('dotenv').config();
 
@@ -26,6 +27,12 @@ mongoose.connect(process.env.MONGODB_ATLAS_URI, {
   console.log('Unable to connect to Database');
   console.log(error);
 });
+
+const dir = './uploads';
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir);
+}
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
