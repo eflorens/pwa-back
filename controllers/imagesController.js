@@ -1,18 +1,31 @@
 const Image = require('../models/imagesModel');
+const User = require('../models/usersModel');
 const fs = require('fs');
-const e = require('express');
 
 exports.uploadImage = (req, res, next) => {
-	const image = new Image({
-		title: req.file.filename,
-		imgUrl: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`,
-		userId: req.userId
-	});
-	image.save().then(
-		() => {
-			res.status(201).json({
-				message: 'Image successfully uploaded'
+
+	User.findOne({_id: req.userId}).then(
+		(user) => {
+			console.log(user);
+			const image = new Image({
+				title: req.file.filename,
+				imgUrl: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`,
+				postedBy: user.username,
+				userIdOfPoster: req.userId
 			});
+			image.save().then(
+				() => {
+					res.status(201).json({
+						message: 'Image successfully uploaded'
+					});
+				}
+			).catch(
+				(error) => {
+					res.status(500).json({
+						error: error
+					});
+				}
+			);
 		}
 	).catch(
 		(error) => {
@@ -24,7 +37,7 @@ exports.uploadImage = (req, res, next) => {
 };
 
 exports.getImages = (req, res, next) => {
-	Image.find({userId: req.userId}).then(
+	Image.find({userIdOfPoster: req.userId}).then(
 		(images) => {
 			return res.send(images);
 		}
@@ -66,10 +79,10 @@ exports.getAllImages = (req, res, next) => {
 };
 
 exports.deleteImageById = (req, res, next) => {
-	Image.findOne({userId: req.userId, _id: req.params.id}).then(
+	Image.findOne({userIdOfPoster: req.userId, _id: req.params.id}).then(
 		(img) => {
 			fs.unlink(`uploads/${img.title}`, () => {
-				Image.deleteOne({userId: req.userId, _id: req.params.id}).then(
+				Image.deleteOne({userIdOfPoster: req.userId, _id: req.params.id}).then(
 					() => res.status(200).json({message: "Image successfully deleted"})
 				).catch(
 					(error) => {
