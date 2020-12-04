@@ -26,13 +26,7 @@ exports.uploadImage = (req, res, next) => {
 exports.getImages = (req, res, next) => {
 	Image.find({userId: req.userId}).then(
 		(images) => {
-			imgUrls = []
-			images.forEach((image) => {
-				imgUrls.push({ 
-					id: image._id,
-					imgUrl: image.imgUrl });
-			});
-			return res.send(imgUrls);
+			return res.send(images);
 		}
 	).catch(
 		(error) => {
@@ -44,9 +38,23 @@ exports.getImages = (req, res, next) => {
 };
 
 exports.getImageById = (req, res, next) => {
-	Image.findOne({userId: req.userId, _id: req.params.id}).then(
+	Image.findOne({_id: req.params.id}).then(
 		(img) => {
-			return res.send(img != undefined ? {id: img._id, imgUrl: img.imgUrl} : {});
+			return res.send(img);
+		}
+	).catch(
+		(error) => {
+			res.status(500).json({
+				error: error
+			});
+		}
+	);
+};
+
+exports.getAllImages = (req, res, next) => {
+	Image.find().then(
+		(img) => {
+			return res.send(img);
 		}
 	).catch(
 		(error) => {
